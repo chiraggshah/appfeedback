@@ -2,7 +2,7 @@ import cn from "classnames";
 import { useState } from "react";
 import Avatar from "boring-avatars";
 
-import s from "./DropdownMenu.module.css";
+import s from "./UserDropdownMenu.module.css";
 
 const UserDropdownMenu = ({ user }) => {
   const [display, setDisplay] = useState(false);
