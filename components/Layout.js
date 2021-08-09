@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { useUser } from "@auth0/nextjs-auth0";
-import Container from "../components/ui/Container";
-import Logo from "../components/ui/Logo";
+
+import Container from "./ui/Container";
+import Logo from "./ui/Logo";
+import UserDropdownMenu from "./ui/UserDropdownMenu";
 
 const Layout = ({ children }) => {
   const { user, error, isLoading } = useUser();
@@ -52,11 +54,7 @@ const NavBar = ({ user }) => (
           </nav>
         </div>
         {user ? (
-          <Link href="/api/auth/logout">
-            <a className="inline-flex items-center text-primary leading-6 font-medium transition ease-in-out duration-75 cursor-pointer text-accents-6">
-              Logout
-            </a>
-          </Link>
+          <UserDropdownMenu user={user} />
         ) : (
           <Link href="/api/auth/login">
             <a className="inline-flex items-center text-primary leading-6 font-medium transition ease-in-out duration-75 cursor-pointer text-accents-6">
