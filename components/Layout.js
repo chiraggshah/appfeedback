@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useUser } from "@auth0/nextjs-auth0";
+import Cookies from "js-cookie";
 
 import Container from "./ui/Container";
 import Logo from "./ui/Logo";
@@ -9,9 +10,14 @@ import UserDropdownMenu from "./ui/UserDropdownMenu";
 const Layout = ({ children }) => {
   const { user, error, isLoading } = useUser();
 
-  useEffect(() => {
+  useEffect(async () => {
     if (user) {
-      fetch("/api/syncUser", { method: "POST", body: JSON.stringify(user) });
+      const syncUserRequest = await fetch("/api/syncUser", {
+        method: "POST",
+        body: JSON.stringify(user),
+      });
+      const { token } = await syncUserRequest.json();
+      Cookies.set("token", token, { expires: 365 });
     }
   }, [user]);
 
