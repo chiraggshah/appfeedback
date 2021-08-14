@@ -16,9 +16,10 @@ export default async (req, res) => {
   });
 
   const fetchUserData = await fetchUserRequest.json();
+  let userId;
 
   if (fetchUserData.length === 0) {
-    await fetch(process.env.HARPERDB_URL, {
+    const createUserRequest = await fetch(process.env.HARPERDB_URL, {
       method: "POST",
       headers,
       redirect: "follow",
@@ -29,7 +30,12 @@ export default async (req, res) => {
           `,
       }),
     });
+
+    const createUserData = await createUserRequest.json();
+    userId = createUserData.inserted_hashes[0];
+  } else {
+    userId = fetchUserData[0].id;
   }
 
-  res.status(200).json({});
+  res.status(200).json({ token: userId });
 };
