@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Link from "next/link";
 import { useUser } from "@auth0/nextjs-auth0";
 
@@ -7,6 +8,12 @@ import UserDropdownMenu from "./ui/UserDropdownMenu";
 
 const Layout = ({ children }) => {
   const { user, error, isLoading } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      fetch("/api/syncUser", { method: "POST", body: JSON.stringify(user) });
+    }
+  }, [user]);
 
   return (
     <div>
