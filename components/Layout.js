@@ -1,11 +1,16 @@
-import Link from 'next/link';
-import Container from '../components/ui/Container';
-import Logo from '../components/ui/Logo';
+import Link from "next/link";
+import { useUser } from "@auth0/nextjs-auth0";
+
+import Container from "./ui/Container";
+import Logo from "./ui/Logo";
+import UserDropdownMenu from "./ui/UserDropdownMenu";
 
 const Layout = ({ children }) => {
+  const { user, error, isLoading } = useUser();
+
   return (
     <div>
-      <NavBar />
+      <NavBar user={user} />
       <main className="relative bg-gray-100 px-20 py-20">{children}</main>
       <footer className="flex items-center justify-center w-full h-24 border-t">
         Footer Links
@@ -14,7 +19,7 @@ const Layout = ({ children }) => {
   );
 };
 
-const NavBar = () => (
+const NavBar = ({ user }) => (
   <div className="sticky top-0 bg-white z-40 transition-all duration-150 border-b">
     <Container>
       <div className="relative flex flex-row justify-between py-4 align-center px-20">
@@ -48,6 +53,15 @@ const NavBar = () => (
             </Link>
           </nav>
         </div>
+        {user ? (
+          <UserDropdownMenu user={user} />
+        ) : (
+          <Link href="/api/auth/login">
+            <a className="inline-flex items-center text-primary leading-6 font-medium transition ease-in-out duration-75 cursor-pointer text-accents-6">
+              Login
+            </a>
+          </Link>
+        )}
       </div>
     </Container>
   </div>

@@ -1,0 +1,19 @@
+.dropdownMenu {
+  @apply z-40 mt-2 absolute bg-white right-20 top-14 border shadow-lg w-56 h-auto;
+}
+
+.linkGeneral {
+  @apply flex px-6 py-3 flex transition ease-in-out duration-150 leading-6 font-medium items-center;
+}
+
+.logoutLink {
+  @apply border-t hover:font-bold hover:bg-gray-100;
+}
+
+.avatarButton {
+  @apply inline-flex justify-center rounded-full pt-1;
+}
+
+.avatarButton:focus {
+  @apply outline-none;
+}
