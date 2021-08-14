@@ -1,6 +1,7 @@
 import cn from "classnames";
 import { useState } from "react";
 import Avatar from "boring-avatars";
+import Cookies from "js-cookie";
 
 import s from "./UserDropdownMenu.module.css";
 
@@ -28,7 +29,10 @@ const UserDropdownMenu = ({ user }) => {
             <a
               href="/api/auth/logout"
               className={cn(s.linkGeneral, s.logoutLink)}
-              onClick={() => setDisplay(false)}
+              onClick={() => {
+                Cookies.remove("token");
+                setDisplay(false);
+              }}
             >
               Logout
             </a>
