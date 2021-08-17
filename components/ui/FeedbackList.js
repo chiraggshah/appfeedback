@@ -1,5 +1,3 @@
-const DESC_MAX_LENGTH = 120;
-
 const FeedbackList = ({ feedbacks }) =>
   feedbacks.map((item) => <Feedback key={item.id} {...item} />);
 
@@ -12,11 +10,7 @@ const Feedback = ({ title, vote_count, description }) => (
       </div>
       <div className="flex flex-col px-5">
         <div className="font-medium">{title}</div>
-        <div className="font-light flex-wrap text-sm mt-1">
-          {description.length < DESC_MAX_LENGTH
-            ? description
-            : [description.slice(0, DESC_MAX_LENGTH), "..."].join(" ")}
-        </div>
+        <div className="font-light flex-wrap text-sm mt-1">{description}</div>
       </div>
     </div>
     <div className="flex">...</div>
