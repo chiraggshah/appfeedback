@@ -1,4 +1,25 @@
+import Cookies from "js-cookie";
+import useSWR from "swr";
+
+import FeedbackList from "../components/ui/FeedbackList";
+
 export default function Feedback() {
+  const { data: feedbacks = [], mutate } = useSWR("/api/fetchFeedbacks");
+
+  const addFeedback = async () => {
+    await fetch("/api/createFeedback", {
+      method: "POST",
+      headers: {
+        token: Cookies.get("token"),
+      },
+      body: JSON.stringify({
+        title: "Feedback Title",
+        description: "Feedback Description",
+      }),
+    });
+    mutate();
+  };
+
   return (
     <div className="grid grid-cols-8 gap-4">
       <div />
@@ -6,7 +27,10 @@ export default function Feedback() {
 
       <div className="flex flex-row col-span-4 justify-end items-center space-x-4">
         <input placeholder="Search" className="border rounded-md p-2" />
-        <div className="border rounded-md p-2 bg-indigo-600 text-white cursor-pointer">
+        <div
+          className="border rounded-md p-2 bg-indigo-600 text-white cursor-pointer"
+          onClick={addFeedback}
+        >
           Add Feedback
         </div>
       </div>
@@ -16,10 +40,7 @@ export default function Feedback() {
       <div className="col-span-2">
         <div className="border rounded-md bg-white shadow-sm my-4">
           <div className="flex flex-row justify-between p-4 border-b items-center">
-            <div>Category</div>
-            <div className="border rounded-md px-3 py-1 text-xs cursor-pointer">
-              Add
-            </div>
+            <div>Categories</div>
           </div>
           <div className="p-4">
             <CategoryItem label="All" count="0" />
@@ -39,7 +60,9 @@ export default function Feedback() {
           </div>
         </div>
       </div>
-      <div className="col-span-4 border rounded-md bg-white shadow-sm my-4"></div>
+      <div className="col-span-4">
+        <FeedbackList feedbacks={feedbacks} />
+      </div>
       <div />
     </div>
   );
