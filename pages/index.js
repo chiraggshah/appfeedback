@@ -8,12 +8,13 @@ export default function Feedback() {
   const { data: feedbacks = [], mutate } = useSWR("/api/fetchFeedbacks");
   const [addFeedbackModalIsOpen, setAddFeedbackModalIsOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [feedbackForEdit, setFeedbackForEdit] = useState();
 
   const closeAddFeedbackModal = () => setAddFeedbackModalIsOpen(false);
   const showAddFeedbackModal = () => setAddFeedbackModalIsOpen(true);
 
   const searchIn = (attr = "") =>
-    attr.toLowerCase().includes(search.toLowerCase());
+    String(attr).toLowerCase().includes(search.toLowerCase());
 
   const feedbacksBySearch = feedbacks.filter(
     ({ title, description }) => searchIn(title) || searchIn(description)
@@ -33,7 +34,10 @@ export default function Feedback() {
         />
         <div
           className="border rounded-md p-2 bg-indigo-600 text-white cursor-pointer"
-          onClick={showAddFeedbackModal}
+          onClick={() => {
+            setFeedbackForEdit();
+            showAddFeedbackModal();
+          }}
         >
           Add Feedback
         </div>
@@ -65,13 +69,18 @@ export default function Feedback() {
         </div>
       </div>
       <div className="col-span-4">
-        <FeedbackList feedbacks={feedbacksBySearch} />
+        <FeedbackList
+          feedbacks={feedbacksBySearch}
+          setFeedbackForEdit={setFeedbackForEdit}
+          showAddFeedbackModal={showAddFeedbackModal}
+        />
       </div>
       <div />
       <AddFeedbackModal
         closeModal={closeAddFeedbackModal}
         isOpen={addFeedbackModalIsOpen}
         fetchFeedbacks={mutate}
+        feedback={feedbackForEdit}
       />
     </div>
   );

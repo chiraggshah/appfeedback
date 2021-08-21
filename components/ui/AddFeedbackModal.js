@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import cn from "classnames";
 import Cookies from "js-cookie";
 import Modal from "react-modal";
@@ -17,12 +17,24 @@ const customStyles = {
 
 Modal.defaultStyles.overlay.backgroundColor = "#999999CC";
 
-const AddFeedbackModal = ({ isOpen, closeModal, fetchFeedbacks }) => {
+const AddFeedbackModal = ({
+  isOpen,
+  closeModal,
+  fetchFeedbacks,
+  feedback = {},
+}) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, showLoading] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
+
+  useEffect(() => {
+    if (feedback.id) {
+      setTitle(feedback.title || "");
+      setDescription(feedback.description || "");
+    }
+  }, [feedback]);
 
   const onCloseModal = () => {
     setTitle("");
@@ -50,13 +62,24 @@ const AddFeedbackModal = ({ isOpen, closeModal, fetchFeedbacks }) => {
     }
 
     showLoading(true);
-    await fetch("/api/createFeedback", {
+
+    let apiUrl, body;
+    if (feedback.id) {
+      apiUrl = "/api/updateFeedback";
+      body = JSON.stringify({ id: feedback.id, title, description });
+    } else {
+      apiUrl = "/api/createFeedback";
+      body = JSON.stringify({ title, description });
+    }
+
+    await fetch(apiUrl, {
       method: "POST",
       headers: {
         token: Cookies.get("token"),
       },
-      body: JSON.stringify({ title, description }),
+      body,
     });
+
     await fetchFeedbacks();
     showLoading(false);
     onCloseModal();
