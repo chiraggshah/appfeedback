@@ -4,6 +4,7 @@ const FeedbackList = ({
   feedbacks,
   setFeedbackForEdit,
   showAddFeedbackModal,
+  fetchFeedbacks,
 }) =>
   feedbacks.map((item) => (
     <Feedback
@@ -13,11 +14,31 @@ const FeedbackList = ({
         setFeedbackForEdit(item);
         showAddFeedbackModal();
       }}
+      fetchFeedbacks={fetchFeedbacks}
     />
   ));
 
-const Feedback = ({ title, vote_count, description, id, user_id, onEdit }) => {
+const Feedback = ({
+  title,
+  vote_count,
+  description,
+  id,
+  user_id,
+  onEdit,
+  fetchFeedbacks,
+}) => {
   const currentUserId = Cookies.get("token");
+
+  const deleteFeedback = async () => {
+    await fetch("/api/deleteFeedback", {
+      method: "POST",
+      headers: {
+        token: Cookies.get("token"),
+      },
+      body: JSON.stringify({ id }),
+    });
+    fetchFeedbacks();
+  };
 
   return (
     <div className="flex flex-row border rounded-md my-4 p-5 bg-white justify-between shadow-sm">
@@ -37,7 +58,7 @@ const Feedback = ({ title, vote_count, description, id, user_id, onEdit }) => {
             <div className="cursor-pointer" onClick={onEdit}>
               <Edit />
             </div>
-            <div className="cursor-pointer">
+            <div className="cursor-pointer" onClick={deleteFeedback}>
               <Delete />
             </div>
           </div>

@@ -73,6 +73,7 @@ export default function Feedback() {
           feedbacks={feedbacksBySearch}
           setFeedbackForEdit={setFeedbackForEdit}
           showAddFeedbackModal={showAddFeedbackModal}
+          fetchFeedbacks={mutate}
         />
       </div>
       <div />
