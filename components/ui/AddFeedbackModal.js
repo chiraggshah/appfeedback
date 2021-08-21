@@ -63,23 +63,22 @@ const AddFeedbackModal = ({
 
     showLoading(true);
 
+    let apiUrl, body;
     if (feedback.id) {
-      await fetch("/api/updateFeedback", {
-        method: "POST",
-        headers: {
-          token: Cookies.get("token"),
-        },
-        body: JSON.stringify({ id: feedback.id, title, description }),
-      });
+      apiUrl = "/api/updateFeedback";
+      body = JSON.stringify({ id: feedback.id, title, description });
     } else {
-      await fetch("/api/createFeedback", {
-        method: "POST",
-        headers: {
-          token: Cookies.get("token"),
-        },
-        body: JSON.stringify({ title, description }),
-      });
+      apiUrl = "/api/createFeedback";
+      body = JSON.stringify({ title, description });
     }
+
+    await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        token: Cookies.get("token"),
+      },
+      body,
+    });
 
     await fetchFeedbacks();
     showLoading(false);
