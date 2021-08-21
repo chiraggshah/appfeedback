@@ -1,24 +1,15 @@
-import Cookies from "js-cookie";
+import { useState } from "react";
 import useSWR from "swr";
 
 import FeedbackList from "../components/ui/FeedbackList";
+import AddFeedbackModal from "../components/ui/AddFeedbackModal";
 
 export default function Feedback() {
   const { data: feedbacks = [], mutate } = useSWR("/api/fetchFeedbacks");
+  const [addFeedbackModalIsOpen, setAddFeedbackModalIsOpen] = useState(false);
 
-  const addFeedback = async () => {
-    await fetch("/api/createFeedback", {
-      method: "POST",
-      headers: {
-        token: Cookies.get("token"),
-      },
-      body: JSON.stringify({
-        title: "Feedback Title",
-        description: "Feedback Description",
-      }),
-    });
-    mutate();
-  };
+  const closeAddFeedbackModal = () => setAddFeedbackModalIsOpen(false);
+  const showAddFeedbackModal = () => setAddFeedbackModalIsOpen(true);
 
   return (
     <div className="grid grid-cols-8 gap-4">
@@ -29,7 +20,7 @@ export default function Feedback() {
         <input placeholder="Search" className="border rounded-md p-2" />
         <div
           className="border rounded-md p-2 bg-indigo-600 text-white cursor-pointer"
-          onClick={addFeedback}
+          onClick={showAddFeedbackModal}
         >
           Add Feedback
         </div>
@@ -64,6 +55,11 @@ export default function Feedback() {
         <FeedbackList feedbacks={feedbacks} />
       </div>
       <div />
+      <AddFeedbackModal
+        closeModal={closeAddFeedbackModal}
+        isOpen={addFeedbackModalIsOpen}
+        fetchFeedbacks={mutate}
+      />
     </div>
   );
 }
