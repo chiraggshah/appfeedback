@@ -1,9 +1,22 @@
 import Cookies from "js-cookie";
 
-const FeedbackList = ({ feedbacks }) =>
-  feedbacks.map((item) => <Feedback key={item.id} {...item} />);
+const FeedbackList = ({
+  feedbacks,
+  setFeedbackForEdit,
+  showAddFeedbackModal,
+}) =>
+  feedbacks.map((item) => (
+    <Feedback
+      key={item.id}
+      {...item}
+      onEdit={() => {
+        setFeedbackForEdit(item);
+        showAddFeedbackModal();
+      }}
+    />
+  ));
 
-const Feedback = ({ title, vote_count, description, id, user_id, ...rest }) => {
+const Feedback = ({ title, vote_count, description, id, user_id, onEdit }) => {
   const currentUserId = Cookies.get("token");
 
   return (
@@ -21,7 +34,7 @@ const Feedback = ({ title, vote_count, description, id, user_id, ...rest }) => {
       <div className="flex">
         {currentUserId === user_id && (
           <div className="flex flex-row space-x-1">
-            <div className="cursor-pointer">
+            <div className="cursor-pointer" onClick={onEdit}>
               <Edit />
             </div>
             <div className="cursor-pointer">
