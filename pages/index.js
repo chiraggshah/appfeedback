@@ -7,9 +7,17 @@ import AddFeedbackModal from "../components/ui/AddFeedbackModal";
 export default function Feedback() {
   const { data: feedbacks = [], mutate } = useSWR("/api/fetchFeedbacks");
   const [addFeedbackModalIsOpen, setAddFeedbackModalIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
   const closeAddFeedbackModal = () => setAddFeedbackModalIsOpen(false);
   const showAddFeedbackModal = () => setAddFeedbackModalIsOpen(true);
+
+  const searchIn = (attr = "") =>
+    attr.toLowerCase().includes(search.toLowerCase());
+
+  const feedbacksBySearch = feedbacks.filter(
+    ({ title, description }) => searchIn(title) || searchIn(description)
+  );
 
   return (
     <div className="grid grid-cols-8 gap-4">
@@ -17,7 +25,12 @@ export default function Feedback() {
       <div className="col-span-2 text-2xl">All Feedbacks</div>
 
       <div className="flex flex-row col-span-4 justify-end items-center space-x-4">
-        <input placeholder="Search" className="border rounded-md p-2" />
+        <input
+          placeholder="Search"
+          className="border rounded-md p-2"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <div
           className="border rounded-md p-2 bg-indigo-600 text-white cursor-pointer"
           onClick={showAddFeedbackModal}
@@ -52,7 +65,7 @@ export default function Feedback() {
         </div>
       </div>
       <div className="col-span-4">
-        <FeedbackList feedbacks={feedbacks} />
+        <FeedbackList feedbacks={feedbacksBySearch} />
       </div>
       <div />
       <AddFeedbackModal
