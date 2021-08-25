@@ -6,7 +6,7 @@ export default async (req, res) => {
   const updateFeedbackRequest = await fetchHarperDB(
     `
       UPDATE dev.feedbacks
-      SET title = '${title}', description = '${description}'\
+      SET title = '${title}', description = '${description}', category_id = '${categoryId}'\
       WHERE id = '${id}';
     `
   );
