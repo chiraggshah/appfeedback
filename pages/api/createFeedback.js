@@ -7,7 +7,7 @@ export default async (req, res) => {
   const createFeedbackRequest = await fetchHarperDB(
     `
       INSERT INTO dev.feedbacks (user_id, title, description, vote_count, category_id)\
-      VALUES ('${userId}', '${title}', '${description}', 1, ${categoryId});
+      VALUES ('${userId}', '${title}', '${description}', 1, '${categoryId}');
     `
   );
 

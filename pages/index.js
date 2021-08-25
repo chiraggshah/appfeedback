@@ -1,13 +1,29 @@
 import { useState } from "react";
 import useSWR from "swr";
+import cn from "classnames";
 
 import FeedbackList from "../components/ui/FeedbackList";
 import AddFeedbackModal from "../components/ui/AddFeedbackModal";
+import fetchHarperDB from "../lib/fetchHarperDB";
 
-export default function Feedback() {
+export async function getServerSideProps({ req }) {
+  const fetchCategoriesRequest = await fetchHarperDB(
+    `
+      SELECT * FROM dev.categories
+      ORDER BY __createdtime__;
+    `
+  );
+  const categories = await fetchCategoriesRequest.json();
+
+  // Pass data to the page via props
+  return { props: { categories } };
+}
+
+export default function Feedback({ categories }) {
   const { data: feedbacks = [], mutate } = useSWR("/api/fetchFeedbacks");
   const [addFeedbackModalIsOpen, setAddFeedbackModalIsOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(0);
   const [feedbackForEdit, setFeedbackForEdit] = useState();
 
   const closeAddFeedbackModal = () => setAddFeedbackModalIsOpen(false);
@@ -19,6 +35,13 @@ export default function Feedback() {
   const feedbacksBySearch = feedbacks.filter(
     ({ title, description }) => searchIn(title) || searchIn(description)
   );
+
+  const feedbackByCategory =
+    selectedCategory === 0
+      ? feedbacksBySearch
+      : feedbacksBySearch.filter(
+          ({ category_id }) => category_id === selectedCategory
+        );
 
   return (
     <div className="grid grid-cols-8 gap-4">
@@ -50,11 +73,28 @@ export default function Feedback() {
           <div className="flex flex-row justify-between p-4 border-b items-center">
             <div>Categories</div>
           </div>
-          <div className="p-4">
-            <CategoryItem label="All" count="0" />
-            <CategoryItem label="General ✋🏻" count="0" />
-            <CategoryItem label="Features ❤️" count="0" />
-            <CategoryItem label="Integrations 🤩" count="0" />
+          <div>
+            <CategoryItem
+              label="All"
+              count={feedbacks.length}
+              selected={selectedCategory === 0}
+              onClick={() => {
+                setSelectedCategory(0);
+              }}
+            />
+            {categories.map((category) => (
+              <CategoryItem
+                key={category.id}
+                label={category.name}
+                selected={selectedCategory === category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                count={
+                  feedbacks.filter(
+                    (feedback) => feedback.category_id === category.id
+                  ).length
+                }
+              />
+            ))}
           </div>
         </div>
         <div className="border rounded-md bg-white shadow-sm my-6">
@@ -69,12 +109,16 @@ export default function Feedback() {
         </div>
       </div>
       <div className="col-span-4">
-        <FeedbackList
-          feedbacks={feedbacksBySearch}
-          setFeedbackForEdit={setFeedbackForEdit}
-          showAddFeedbackModal={showAddFeedbackModal}
-          fetchFeedbacks={mutate}
-        />
+        {feedbackByCategory.length === 0 ? (
+          <div className="my-4">No Feedbacks Found</div>
+        ) : (
+          <FeedbackList
+            feedbacks={feedbackByCategory}
+            setFeedbackForEdit={setFeedbackForEdit}
+            showAddFeedbackModal={showAddFeedbackModal}
+            fetchFeedbacks={mutate}
+          />
+        )}
       </div>
       <div />
       <AddFeedbackModal
@@ -82,15 +126,25 @@ export default function Feedback() {
         isOpen={addFeedbackModalIsOpen}
         fetchFeedbacks={mutate}
         feedback={feedbackForEdit}
+        categories={categories}
       />
     </div>
   );
 }
 
-const CategoryItem = ({ label, count }) => (
-  <div className="flex flex-row justify-between py-3">
-    <h4 className="">{label}</h4>
-    <div className="rounded-full px-3 bg-indigo-100 text-sm text-indigo-500 self-center border border-indigo-500">
+const CategoryItem = ({ label, count, selected, onClick }) => (
+  <div
+    className="flex flex-row justify-between py-3 px-4 cursor-pointer hover:bg-indigo-200"
+    onClick={onClick}
+  >
+    <h4 className={cn({ "text-indigo-500": selected })}>{label}</h4>
+    <div
+      className={cn(
+        "rounded-full px-3 text-sm self-center border",
+        { "border-indigo-500 text-indigo-500 bg-indigo-100": selected },
+        { "border-gray-300 bg-white text-gray-300": !selected }
+      )}
+    >
       {count}
     </div>
   </div>
