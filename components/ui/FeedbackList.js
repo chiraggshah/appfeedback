@@ -31,15 +31,27 @@ const Feedback = ({
 }) => {
   const [loading, showLoading] = useState(false);
 
+  const onEditFeedback = () => {
+    if (Cookies.get("token")) {
+      onEdit();
+    } else {
+      router.push("/api/auth/login");
+    }
+  };
+
   const deleteFeedback = async () => {
-    await fetch("/api/deleteFeedback", {
-      method: "POST",
-      headers: {
-        token: Cookies.get("token"),
-      },
-      body: JSON.stringify({ id }),
-    });
-    fetchFeedbacks();
+    if (Cookies.get("token")) {
+      await fetch("/api/deleteFeedback", {
+        method: "POST",
+        headers: {
+          token: Cookies.get("token"),
+        },
+        body: JSON.stringify({ id }),
+      });
+      fetchFeedbacks();
+    } else {
+      router.push("/api/auth/login");
+    }
   };
 
   const updateVote = async () => {
@@ -87,7 +99,7 @@ const Feedback = ({
       <div className="flex">
         {Cookies.get("token") === user_id && (
           <div className="flex flex-row space-x-1">
-            <div className="cursor-pointer" onClick={onEdit}>
+            <div className="cursor-pointer" onClick={onEditFeedback}>
               <Edit />
             </div>
             <div className="cursor-pointer" onClick={deleteFeedback}>
