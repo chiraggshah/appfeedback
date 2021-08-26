@@ -115,10 +115,7 @@ export default function Feedback({ categories }) {
             <SortItem
               label="Most Votes"
               selected={sortOrder === "MOST_VOTES"}
-              onClick={() => {
-                console.log(123);
-                setSortOrder("MOST_VOTES");
-              }}
+              onClick={() => setSortOrder("MOST_VOTES")}
             />
           </div>
         </div>
