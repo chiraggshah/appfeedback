@@ -17,7 +17,7 @@ const Layout = ({ children }) => {
         body: JSON.stringify(user),
       });
       const { token } = await syncUserRequest.json();
-      Cookies.set("token", token, { expires: 365 });
+      Cookies.set("token", token, { expires: 5 / 12 }); // expires in 10 hours
     }
   }, [user]);
 

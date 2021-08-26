@@ -6,6 +6,37 @@ import FeedbackList from "../components/ui/FeedbackList";
 import AddFeedbackModal from "../components/ui/AddFeedbackModal";
 import fetchHarperDB from "../lib/fetchHarperDB";
 
+const sortAndFilterFeedbacks = (
+  feedbacks,
+  searchStr,
+  selectedCategory,
+  sortBy
+) => {
+  const searchIn = (attr = "") =>
+    String(attr).toLowerCase().includes(searchStr.toLowerCase());
+
+  const feedbacksBySearch = feedbacks
+    .filter(
+      ({ title, description }) => searchIn(title) || searchIn(description)
+    )
+    .filter(({ category_id }) =>
+      selectedCategory === 0 ? true : category_id === selectedCategory
+    );
+
+  switch (sortBy) {
+    case "CREATED_AT_ASC":
+      return feedbacksBySearch.sort(
+        (a, b) => b.__createdtime__ - a.__createdtime__
+      );
+    case "CREATED_AT_DESC":
+      return feedbacksBySearch.sort(
+        (a, b) => a.__createdtime__ - b.__createdtime__
+      );
+    case "MOST_VOTES":
+      return feedbacksBySearch.sort((a, b) => b.vote_count - a.vote_count);
+  }
+};
+
 export async function getServerSideProps({ req }) {
   const fetchCategoriesRequest = await fetchHarperDB(
     `
@@ -25,23 +56,17 @@ export default function Feedback({ categories }) {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [feedbackForEdit, setFeedbackForEdit] = useState();
+  const [sortOrder, setSortOrder] = useState("CREATED_AT_ASC");
 
   const closeAddFeedbackModal = () => setAddFeedbackModalIsOpen(false);
   const showAddFeedbackModal = () => setAddFeedbackModalIsOpen(true);
 
-  const searchIn = (attr = "") =>
-    String(attr).toLowerCase().includes(search.toLowerCase());
-
-  const feedbacksBySearch = feedbacks.filter(
-    ({ title, description }) => searchIn(title) || searchIn(description)
+  const sortedAndFilteredFeedbacks = sortAndFilterFeedbacks(
+    feedbacks,
+    search,
+    selectedCategory,
+    sortOrder
   );
-
-  const feedbackByCategory =
-    selectedCategory === 0
-      ? feedbacksBySearch
-      : feedbacksBySearch.filter(
-          ({ category_id }) => category_id === selectedCategory
-        );
 
   return (
     <div className="grid grid-cols-8 gap-4">
@@ -70,7 +95,7 @@ export default function Feedback({ categories }) {
       <div />
       <div className="col-span-2">
         <div className="border rounded-md bg-white shadow-sm my-4">
-          <div className="flex flex-row justify-between p-4 border-b items-center">
+          <div className="flex flex-row justify-between p-4 border-b">
             <div>Categories</div>
           </div>
           <div>
@@ -98,22 +123,35 @@ export default function Feedback({ categories }) {
           </div>
         </div>
         <div className="border rounded-md bg-white shadow-sm my-6">
-          <div className="flex flex-row justify-between p-4 border-b">
-            Filter
-          </div>
-          <div className="p-4">
-            <FilterItem label="Sort By" filterBy="Top" />
-            <FilterItem label="Status" filterBy="All" />
-            <FilterItem label="Tags" filterBy="All" />
+          <div className="flex flex-row justify-between p-4 border-b">Sort</div>
+          <div>
+            <SortItem
+              label="Recent First"
+              selected={sortOrder === "CREATED_AT_ASC"}
+              onClick={() => setSortOrder("CREATED_AT_ASC")}
+            />
+            <SortItem
+              label="Oldest First"
+              selected={sortOrder === "CREATED_AT_DESC"}
+              onClick={() => setSortOrder("CREATED_AT_DESC")}
+            />
+            <SortItem
+              label="Most Votes"
+              selected={sortOrder === "MOST_VOTES"}
+              onClick={() => {
+                console.log(123);
+                setSortOrder("MOST_VOTES");
+              }}
+            />
           </div>
         </div>
       </div>
       <div className="col-span-4">
-        {feedbackByCategory.length === 0 ? (
+        {sortedAndFilteredFeedbacks.length === 0 ? (
           <div className="my-4">No Feedbacks Found</div>
         ) : (
           <FeedbackList
-            feedbacks={feedbackByCategory}
+            feedbacks={sortedAndFilteredFeedbacks}
             setFeedbackForEdit={setFeedbackForEdit}
             showAddFeedbackModal={showAddFeedbackModal}
             fetchFeedbacks={mutate}
@@ -150,9 +188,17 @@ const CategoryItem = ({ label, count, selected, onClick }) => (
   </div>
 );
 
-const FilterItem = ({ label, filterBy }) => (
-  <div className="flex flex-row justify-between py-3">
-    <h4 className="">{label}</h4>
-    <div className="">{filterBy}</div>
+const SortItem = ({ label, onClick, selected }) => (
+  <div
+    className="flex flex-row justify-between py-3 px-4 cursor-pointer hover:bg-indigo-200"
+    onClick={onClick}
+  >
+    <h4 className={cn({ "text-indigo-500": selected })}>{label}</h4>
+    <div
+      className={cn("flex border-2 rounded-full w-2 h-2 p-2", {
+        "bg-indigo-100 border-indigo-500": selected,
+        "border-gray-300 bg-white": !selected,
+      })}
+    />
   </div>
 );
