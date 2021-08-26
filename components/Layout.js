@@ -49,7 +49,7 @@ const NavBar = ({ user }) => (
                 Feedback
               </a>
             </Link>
-            <Link href="/roadmap">
+            {/* <Link href="/roadmap">
               <a className="inline-flex items-center text-primary leading-6 font-medium transition ease-in-out duration-75 cursor-pointer text-accents-6">
                 Roadmap
               </a>
@@ -63,7 +63,7 @@ const NavBar = ({ user }) => (
               <a className="inline-flex items-center text-primary leading-6 font-medium transition ease-in-out duration-75 cursor-pointer text-accents-6">
                 Bugs
               </a>
-            </Link>
+            </Link> */}
           </nav>
         </div>
         {user ? (
