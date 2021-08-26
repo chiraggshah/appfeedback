@@ -173,10 +173,15 @@ const SortItem = ({ label, onClick, selected }) => (
   >
     <h4 className={cn({ "text-indigo-500": selected })}>{label}</h4>
     <div
-      className={cn("flex border-2 rounded-full w-2 h-2 p-2", {
-        "bg-indigo-100 border-indigo-500": selected,
-        "border-gray-300 bg-white": !selected,
-      })}
-    />
+      className={cn(
+        "flex border-2 rounded-full w-2 h-2 p-2 items-center justify-center",
+        {
+          "bg-indigo-100 border-indigo-500": selected,
+          "border-gray-300 bg-white": !selected,
+        }
+      )}
+    >
+      {selected && <div className="bg-indigo-500 flex rounded-full p-1" />}
+    </div>
   </div>
 );
