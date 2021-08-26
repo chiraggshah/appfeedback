@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Cookies from "js-cookie";
+import router from "next/router";
 
 const FeedbackList = ({
   feedbacks,
@@ -28,7 +29,6 @@ const Feedback = ({
   onEdit,
   fetchFeedbacks,
 }) => {
-  const currentUserId = Cookies.get("token");
   const [loading, showLoading] = useState(false);
 
   const deleteFeedback = async () => {
@@ -43,20 +43,24 @@ const Feedback = ({
   };
 
   const updateVote = async () => {
-    showLoading(true);
-    await fetch("/api/updateVote", {
-      method: "POST",
-      headers: {
-        token: Cookies.get("token"),
-      },
-      body: JSON.stringify({
-        feedbackId: id,
-        voteCount: vote_count,
-      }),
-    });
+    if (Cookies.get("token")) {
+      showLoading(true);
+      await fetch("/api/updateVote", {
+        method: "POST",
+        headers: {
+          token: Cookies.get("token"),
+        },
+        body: JSON.stringify({
+          feedbackId: id,
+          voteCount: vote_count,
+        }),
+      });
 
-    await fetchFeedbacks();
-    showLoading(false);
+      await fetchFeedbacks();
+      showLoading(false);
+    } else {
+      router.push("/api/auth/login");
+    }
   };
 
   return (
@@ -81,7 +85,7 @@ const Feedback = ({
         </div>
       </div>
       <div className="flex">
-        {currentUserId === user_id && (
+        {Cookies.get("token") === user_id && (
           <div className="flex flex-row space-x-1">
             <div className="cursor-pointer" onClick={onEdit}>
               <Edit />
