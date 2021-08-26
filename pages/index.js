@@ -5,37 +5,7 @@ import cn from "classnames";
 import FeedbackList from "../components/ui/FeedbackList";
 import AddFeedbackModal from "../components/ui/AddFeedbackModal";
 import fetchHarperDB from "../lib/fetchHarperDB";
-
-const sortAndFilterFeedbacks = (
-  feedbacks,
-  searchStr,
-  selectedCategory,
-  sortBy
-) => {
-  const searchIn = (attr = "") =>
-    String(attr).toLowerCase().includes(searchStr.toLowerCase());
-
-  const feedbacksBySearch = feedbacks
-    .filter(
-      ({ title, description }) => searchIn(title) || searchIn(description)
-    )
-    .filter(({ category_id }) =>
-      selectedCategory === 0 ? true : category_id === selectedCategory
-    );
-
-  switch (sortBy) {
-    case "CREATED_AT_ASC":
-      return feedbacksBySearch.sort(
-        (a, b) => b.__createdtime__ - a.__createdtime__
-      );
-    case "CREATED_AT_DESC":
-      return feedbacksBySearch.sort(
-        (a, b) => a.__createdtime__ - b.__createdtime__
-      );
-    case "MOST_VOTES":
-      return feedbacksBySearch.sort((a, b) => b.vote_count - a.vote_count);
-  }
-};
+import sortAndFilterFeedbacks from "../lib/sortAndFilterFeedbacks";
 
 export async function getServerSideProps({ req }) {
   const fetchCategoriesRequest = await fetchHarperDB(
