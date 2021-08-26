@@ -1,6 +1,8 @@
 import { useState } from "react";
 import useSWR from "swr";
 import cn from "classnames";
+import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 import FeedbackList from "../components/ui/FeedbackList";
 import AddFeedbackModal from "../components/ui/AddFeedbackModal";
@@ -21,6 +23,7 @@ export async function getServerSideProps({ req }) {
 }
 
 export default function Feedback({ categories }) {
+  const router = useRouter();
   const { data: feedbacks = [], mutate } = useSWR("/api/fetchFeedbacks");
   const [addFeedbackModalIsOpen, setAddFeedbackModalIsOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -53,8 +56,12 @@ export default function Feedback({ categories }) {
         <div
           className="border rounded-md p-2 bg-indigo-600 text-white cursor-pointer"
           onClick={() => {
-            setFeedbackForEdit();
-            showAddFeedbackModal();
+            if (Cookies.get("token")) {
+              setFeedbackForEdit();
+              showAddFeedbackModal();
+            } else {
+              router.push("/api/auth/login");
+            }
           }}
         >
           Add Feedback
