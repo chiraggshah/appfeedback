@@ -26,7 +26,7 @@ const AddFeedbackModal = ({
 }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [categoryId, setCategoryId] = useState("");
+  const [categoryId, setCategoryId] = useState(categories[0].id);
   const [loading, showLoading] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
@@ -42,7 +42,7 @@ const AddFeedbackModal = ({
   const onCloseModal = () => {
     setTitle("");
     setDescription("");
-    setCategoryId("");
+    setCategoryId(categories[0].id);
     setTitleError(false);
     setDescriptionError(false);
     closeModal();
