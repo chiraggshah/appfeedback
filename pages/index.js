@@ -132,6 +132,7 @@ export default function Feedback({ categories }) {
             setFeedbackForEdit={setFeedbackForEdit}
             showAddFeedbackModal={showAddFeedbackModal}
             fetchFeedbacks={mutate}
+            categories={categories}
           />
         )}
       </div>

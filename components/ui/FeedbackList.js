@@ -7,6 +7,7 @@ const FeedbackList = ({
   setFeedbackForEdit,
   showAddFeedbackModal,
   fetchFeedbacks,
+  categories,
 }) =>
   feedbacks.map((item) => (
     <Feedback
@@ -17,6 +18,7 @@ const FeedbackList = ({
         showAddFeedbackModal();
       }}
       fetchFeedbacks={fetchFeedbacks}
+      categories={categories}
     />
   ));
 
@@ -28,8 +30,11 @@ const Feedback = ({
   user_id,
   onEdit,
   fetchFeedbacks,
+  category_id,
+  categories,
 }) => {
   const [loading, showLoading] = useState(false);
+  const categoryName = categories.find(({ id }) => category_id === id).name;
 
   const onEditFeedback = () => {
     if (Cookies.get("token")) {
@@ -94,6 +99,9 @@ const Feedback = ({
         <div className="flex flex-col px-5">
           <div className="font-medium">{title}</div>
           <div className="font-light flex-wrap text-sm mt-1">{description}</div>
+          <div class="border-indigo-500 text-indigo-500 bg-indigo-100 text-xs px-2 py-1 rounded-full w-max mt-3">
+            {categoryName}
+          </div>
         </div>
       </div>
       <div className="flex">
