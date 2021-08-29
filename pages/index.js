@@ -79,7 +79,7 @@ export default function LandingPage() {
                 <li className="mr-2">
                   <a
                     className="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-2"
-                    href="#"
+                    href="https://chiraggshah.hashnode.dev/appfeedback-simplify-your-customer-feedback"
                   >
                     About Project
                   </a>
