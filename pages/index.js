@@ -305,7 +305,10 @@ export default function LandingPage() {
           <h3 className="my-4 text-3xl leading-tight">
             Simple. User-Friendly. Constructive. Practical.
           </h3>
-          <button className="mx-auto lg:mx-0 bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+          <button
+            className="mx-auto lg:mx-0 bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+            onClick={() => router.push("/feedbacks")}
+          >
             Launch
           </button>
         </section>
