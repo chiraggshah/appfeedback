@@ -25,9 +25,6 @@ const Layout = ({ children }) => {
     <div>
       <NavBar user={user} />
       <main className="relative bg-gray-100 px-20 py-20">{children}</main>
-      <footer className="flex items-center justify-center w-full h-24 border-t">
-        Footer Links
-      </footer>
     </div>
   );
 };
