@@ -41,26 +41,11 @@ const NavBar = ({ user }) => (
           </Link>
 
           <nav className="ml-20 space-x-4 block">
-            <Link href="/">
+            <Link href="/feedbacks">
               <a className="inline-flex items-center text-primary leading-6 font-medium transition ease-in-out duration-75 cursor-pointer text-accents-6">
                 Feedback
               </a>
             </Link>
-            {/* <Link href="/roadmap">
-              <a className="inline-flex items-center text-primary leading-6 font-medium transition ease-in-out duration-75 cursor-pointer text-accents-6">
-                Roadmap
-              </a>
-            </Link>
-            <Link href="/changelog">
-              <a className="inline-flex items-center text-primary leading-6 font-medium transition ease-in-out duration-75 cursor-pointer text-accents-6">
-                Changelog
-              </a>
-            </Link>
-            <Link href="/bugs">
-              <a className="inline-flex items-center text-primary leading-6 font-medium transition ease-in-out duration-75 cursor-pointer text-accents-6">
-                Bugs
-              </a>
-            </Link> */}
           </nav>
         </div>
         {user ? (

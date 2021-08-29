@@ -71,7 +71,7 @@ export default function LandingPage() {
                 <li className="mr-1">
                   <a
                     className="inline-block text-black no-underline hover:text-gray-800 hover:text-underline py-2 px-2"
-                    href="#"
+                    href="https://github.com/chiraggshah/appfeedback"
                   >
                     GitHub
                   </a>
